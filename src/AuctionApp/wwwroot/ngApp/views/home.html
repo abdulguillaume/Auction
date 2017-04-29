@@ -1,0 +1,48 @@
+<h2>Home</h2>
+<p>
+    {{controller.message}}
+</p>
+<ul>
+    <li ng-repeat="auction in controller.auctions">
+        <table>
+            <tr>
+                <td>
+                    Item: {{auction.item.name}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Details: {{auction.item.description}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Minimum BID: {{auction.item.minimumBid|currency}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Number Of BID: {{auction.bids.length}} / {{auction.item.numberOfBids}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ol>
+                        <li ng-repeat="item in auction.item.images">
+                            <img ng-src="{{item.imageUrl}}" />
+                        </li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button ng-click="controller.showModal(
+                            auction.item, account.getUserName()
+                            )"
+                         ng-show="account.isLoggedIn()"   
+                            >Bid</button>
+                </td>
+            </tr>
+        </table>
+    </li>
+</ul>
