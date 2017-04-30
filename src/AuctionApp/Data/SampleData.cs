@@ -57,6 +57,7 @@ namespace AuctionApp.Data
                     Description = "Pair of Sandals/Make Reaction Kenneth Cole /Material: Leather",
                     MinimumBid = 5m,
                     NumberOfBids = 2,
+                    CreatedDate = DateTime.Now,
                     Images = new List<ItemImage>() {
                         new ItemImage
                         {

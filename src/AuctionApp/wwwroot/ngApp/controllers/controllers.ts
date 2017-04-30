@@ -19,24 +19,34 @@ namespace AuctionApp.Controllers {
         public auctions;
         public message = 'Auctions!';
 
-        constructor(private AuctionWithBidsService: AuctionApp.Services.AuctionWithBidsService,
+        constructor(private AuctionService: AuctionApp.Services.AuctionService,
             private $uibModal: angular.ui.bootstrap.IModalService) {
 
-            this.auctions = AuctionWithBidsService.listAuctions();
+            this.auctions = AuctionService.listAuctions();
                 
         }
 
-        public showModal(auction:object, user:string){//, $uibModal: angular.ui.bootstrap.IModalService) {
+        public refresh() {
+            this.auctions = this.AuctionService.listAuctions();
+        }
+
+        public showModal(id: number, item: string, username: string) {//, $uibModal: angular.ui.bootstrap.IModalService) {
             this.$uibModal.open({
                 templateUrl: '/ngApp/views/auctionDialog.html',
                 controller: 'DialogController',
                 controllerAs: 'modal',
                 resolve: {
-                    auction: () => auction,
-                    username: () => user
+                    id: () => id,
+                    item: () => item,
+                    username: () => username
                 },
                 size: 'sm'
-            });
+            })
+                .result
+                .then(function () {
+                    this.refresh();
+                });
+
         }
 
     }
@@ -47,59 +57,44 @@ namespace AuctionApp.Controllers {
     }
 
     
-        class DialogController {
-            public bid;
-           // public noError = true;
+    class DialogController {
 
-            public ok() {
+        public bid;
 
-                console.log(this.bid);
-                /*var auction = this.AuctionWithBidsService
-                    .getAuction(this.auction_id)
-                    .$promise.then(
-                    result => //console.log(result.item)
+        public error = false;
 
+        public ok() {
+
+            let auction = {
+                id: this.id,
+                bids: [{ id: 0, bidAmount: this.bid, customer: this.username }]
+            };
+
+            let resource:any = this.$resource('/api/auctions/:id', null, {
+                save: {
+                    method: 'POST'
+                }
+            });
+
+            resource.save(auction)
+                .$promise
+                .then(
+                    response =>
                     {
-                        var json = JSON.stringify({
-                            item: result.item,
-                            bidAmount: this.bid,
-                            customer: this.username
-                        });
-
-                        this.saveBid(
-                            encodeURIComponent(json)
-                        );
-
+                        this.$uibModalInstance.close();
+                        this.error = false;
                     }
-                        
-                        
-                        )
-                    */
+                )
+                .catch(
+                    err => this.error = true
+                );
 
-
-
-                /*this.saveBid(
-                    {
-                        item: this.auction_id,
-                        bidAmount: this.bid,
-                        customer: this.username
-                    });*/
                 
-
-                this.$uibModalInstance.close();
             }
 
-            public saveBid() {
 
-                this.AuctionWithBidsService.save(this.bid);
-                    /*.then(
-                        () => this.$state.go("home")
-                    );*/
-            }
-
-            constructor(public auction: object, public username: string, private $uibModalInstance: angular.ui.bootstrap.IModalServiceInstance, private AuctionWithBidsService: AuctionApp.Services.AuctionWithBidsService,
-                private $state: ng.ui.IStateService) {
-            }
+        constructor(private id: number, private item: string, private username: string, private $uibModalInstance: angular.ui.bootstrap.IModalServiceInstance, private $resource: ng.resource.IResourceService ){}
+                //,private $state: ng.ui.IStateService) {}
     }
 
     angular.module('AuctionApp').controller('DialogController', DialogController);

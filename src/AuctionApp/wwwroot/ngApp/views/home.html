@@ -7,28 +7,28 @@
         <table>
             <tr>
                 <td>
-                    Item: {{auction.item.name}}
+                    Item: {{auction.name}}
                 </td>
             </tr>
             <tr>
                 <td>
-                    Details: {{auction.item.description}}
+                    Details: {{auction.description}}
                 </td>
             </tr>
             <tr>
                 <td>
-                    Minimum BID: {{auction.item.minimumBid|currency}}
+                    Minimum BID: {{auction.minimumBid|currency}}
                 </td>
             </tr>
             <tr>
                 <td>
-                    Number Of BID: {{auction.bids.length}} / {{auction.item.numberOfBids}}
+                    Number Of BID: {{auction.bids.length}} / {{auction.numberOfBids}}
                 </td>
             </tr>
             <tr>
                 <td>
                     <ol>
-                        <li ng-repeat="item in auction.item.images">
+                        <li ng-repeat="item in auction.images">
                             <img ng-src="{{item.imageUrl}}" />
                         </li>
                     </ol>
@@ -36,9 +36,16 @@
             </tr>
             <tr>
                 <td>
+                    <ul>
+                        <li ng-repeat="bid in auction.bids">
+                            {{bid.bidAmount|currency}} by {{bid.customer}} on {{bid.bidDate|date:'medium'}}
+                        </li>
+                    </ul>
                     <button ng-click="controller.showModal(
-                            auction.item, account.getUserName()
-                            )"
+                                    auction.id, 
+                                    auction.name, 
+                                    account.getUserName()
+                                        )"
                          ng-show="account.isLoggedIn()"   
                             >Bid</button>
                 </td>

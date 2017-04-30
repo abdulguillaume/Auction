@@ -26,19 +26,15 @@ namespace AuctionApp.API
 
         // GET: api/values
         [HttpGet]
-        public IEnumerable<AuctionItemWithBids> Get()
+        public IEnumerable<AuctionItem> Get()
         {
             /*return _db.AuctionItems
                 .Include(p => p.Images).ToList();*/
             
             var items = _db.AuctionItems
                 .Include(p => p.Images)
-                .Select(i => new AuctionItemWithBids
-                {
-                    Item = i,
-                    Bids = _db.Bids.Where(b => b.Item == i).ToList()
-
-                }).ToList();
+                .Include(b => b.Bids)
+                .ToList();
 
             return items;
         }
@@ -49,13 +45,8 @@ namespace AuctionApp.API
         {
             var auction = _db.AuctionItems
                 .Include(p => p.Images)
-                .Where(a => a.Id == id)
-                .Select(i => new AuctionItemWithBids
-                {
-                    Item = i,
-                    Bids = _db.Bids.Where(b => b.Item == i).ToList()
-
-                }).FirstOrDefault();
+                .Include(b => b.Bids)
+                .FirstOrDefault(a => a.Id == id);
                 
             if (auction == null)
             {
@@ -67,25 +58,55 @@ namespace AuctionApp.API
 
         // POST api/values
         [HttpPost]
-        public IActionResult Post([FromBody]Bid bid)
+        public IActionResult Post([FromBody]AuctionItem auction)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(this.ModelState);
             }
 
-            /*  if (bid.Id != 0)
-              {
-                  //throw exception
-                  ;
-              }*/
+            if (auction.Id == 0)
+            {
+                //add a new auction
+                auction.CreatedDate = DateTime.Now;
+                _db.AuctionItems.Add(auction);
+                _db.SaveChanges();
+            }
+            else
+            {
+                //update auction - add new bid
+                var oldAuction = _db.AuctionItems
+                                    .Include(b=>b.Bids)  //no need to load all at this time
+                                    .FirstOrDefault(a => auction.Id == a.Id);
 
-            bid.BidDate = DateTime.Now;
+                //var aBid = auction.Bids[0];//.FirstOrDefault(b => b.Id == 0);
 
-            _db.Bids.Add(bid);
-            _db.SaveChanges();
+                if (oldAuction != null)
+                {
+                    var newBid = new Bid() {
+                        BidDate = DateTime.Now,
+                        BidAmount = auction.Bids[0].BidAmount,
+                        Customer = auction.Bids[0].Customer
+                    };
+
+                   if(oldAuction.Bids==null)
+                        oldAuction.Bids = new List<Bid>();
+
+                    if (newBid.BidAmount <= oldAuction.getMax())
+                        return BadRequest(this.ModelState);
+
+                    oldAuction.Bids.Add(newBid);
+                    auction = oldAuction;
+                    _db.SaveChanges();
+                }
+            }
+
             
-            return Ok(bid);
+
+            
+            
+            
+            return Ok(auction);
         }
 
         // PUT api/values/5

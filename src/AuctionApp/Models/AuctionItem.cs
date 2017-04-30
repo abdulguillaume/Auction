@@ -17,8 +17,19 @@ namespace AuctionApp.Models
 
         public int NumberOfBids { get; set; }
 
-        //public string ImageUrl { get; set; }
+        public DateTime CreatedDate { get; set; }
+
         public List<ItemImage> Images { get; set; }
+
+        public List<Bid> Bids { get; set; }
+
+        public decimal getMax()
+        {
+            if (Bids == null || Bids.Count == 0)
+                return MinimumBid;
+
+            return Bids.Max(b => b.BidAmount);
+        }
 
     }
 }
