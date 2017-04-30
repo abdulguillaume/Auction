@@ -25,8 +25,9 @@ namespace AuctionApp.Models
 
         public decimal getMax()
         {
-            if (Bids == null || Bids.Count == 0)
-                return MinimumBid;
+            //let's keep both conditions separate
+            //if (Bids == null || Bids.Count == 0)
+              //  return MinimumBid;
 
             return Bids.Max(b => b.BidAmount);
         }

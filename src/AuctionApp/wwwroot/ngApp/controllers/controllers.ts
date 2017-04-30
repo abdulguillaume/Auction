@@ -16,21 +16,23 @@ namespace AuctionApp.Controllers {
 
 
     export class  AuctionsController {
-        public auctions;
-        public message = 'Auctions!';
+        public auctions; 
+        public auctionToCreate;
 
-        constructor(private AuctionService: AuctionApp.Services.AuctionService,
-            private $uibModal: angular.ui.bootstrap.IModalService) {
-
-            this.auctions = AuctionService.listAuctions();
-                
+        constructor(private AuctionService: AuctionApp.Services.AuctionService, private $state: ng.ui.IStateService, private $uibModal: angular.ui.bootstrap.IModalService)
+        {
+            this.auctions = AuctionService.listAuctions();     
         }
 
-        public refresh() {
-            this.auctions = this.AuctionService.listAuctions();
+        //to refresh the auctions list
+        public refresh(that) {
+            that.auctions = that.AuctionService.listAuctions();
         }
 
-        public showModal(id: number, item: string, username: string) {//, $uibModal: angular.ui.bootstrap.IModalService) {
+        public showModal(id: number, item: string, username: string) {
+
+            let that = this;
+
             this.$uibModal.open({
                 templateUrl: '/ngApp/views/auctionDialog.html',
                 controller: 'DialogController',
@@ -44,11 +46,23 @@ namespace AuctionApp.Controllers {
             })
                 .result
                 .then(function () {
-                    this.refresh();
+                    that.refresh(that);
                 });
 
         }
 
+
+        public add(auction) {
+            this.AuctionService.save(auction)
+                .then(
+                    () => this.$state.go('home')
+                );
+        }
+
+    }
+
+    export class AddController {
+        public message = 'Hello from the about page!';
     }
 
 
@@ -62,6 +76,8 @@ namespace AuctionApp.Controllers {
         public bid;
 
         public error = false;
+
+        public emsg;
 
         public ok() {
 
@@ -86,7 +102,11 @@ namespace AuctionApp.Controllers {
                     }
                 )
                 .catch(
-                    err => this.error = true
+                    err =>
+                    {
+                        this.error = true;
+                        this.emsg = err.data;
+                    }
                 );
 
                 
@@ -94,7 +114,6 @@ namespace AuctionApp.Controllers {
 
 
         constructor(private id: number, private item: string, private username: string, private $uibModalInstance: angular.ui.bootstrap.IModalServiceInstance, private $resource: ng.resource.IResourceService ){}
-                //,private $state: ng.ui.IStateService) {}
     }
 
     angular.module('AuctionApp').controller('DialogController', DialogController);

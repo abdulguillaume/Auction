@@ -1,0 +1,21 @@
+﻿<h3>Create an auction</h3>
+
+<form ng-submit="controller.add()">
+    <label for="name"> Name: 
+        <input id="name" type="text" ng-model="controller.auctionToCreate.name"/>
+    </label>
+    <br />
+    <label> Description:
+        <textarea id="description" ng-model="controller.auctionToCreate.description"></textarea>
+    </label>
+    <br />
+    <label for="minimumBid"> Minimum Bid:
+        <input id="minimumBid" type="number" step="any" ng-model="controller.auctionToCreate.minimumBid" />
+    </label>
+    <br />
+    <label for="numberOfBids"> Number Of Bids:
+        <input id="numberOfBids" type="number" ng-model="controller.auctionToCreate.numberOfBids" />
+    </label>
+
+
+</form>

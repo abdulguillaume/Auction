@@ -12,7 +12,7 @@ namespace AuctionApp.Services {
         }
 
         public save(auction) {
-            this.AuctionResource.save(auction).$promise;
+            return this.AuctionResource.save(auction).$promise;
         }
 
         constructor($resource: ng.resource.IResourceService) {

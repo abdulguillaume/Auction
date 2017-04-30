@@ -2,7 +2,7 @@
     <h3 class="modal-title">Bid on Item : {{modal.item}}</h3>
 </div>
 <div class="modal-body">
-    <span style="color:red;" ng-show="modal.error">You should place a higher bid!</span>
+    <span style="color:red;" ng-show="modal.error">{{modal.emsg}}</span>
   <label>Amount: <input  id="bid" ng-model="modal.bid" /></label>
 </div>
 <div class="modal-footer">

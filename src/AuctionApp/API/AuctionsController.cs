@@ -89,11 +89,17 @@ namespace AuctionApp.API
                         Customer = auction.Bids[0].Customer
                     };
 
-                   if(oldAuction.Bids==null)
+                   if(oldAuction.Bids == null)
                         oldAuction.Bids = new List<Bid>();
 
-                    if (newBid.BidAmount <= oldAuction.getMax())
-                        return BadRequest(this.ModelState);
+                    if (oldAuction.Bids.Count==oldAuction.NumberOfBids)
+                        return BadRequest("Auction is closed. Ceiling number has been reached!");
+
+                    if (oldAuction.Bids.Count>0 && newBid.BidAmount <= oldAuction.getMax())
+                        return BadRequest("You should place a higher bid!");
+
+                    if (oldAuction.Bids.Count == 0 && newBid.BidAmount < oldAuction.MinimumBid)
+                        return BadRequest(string.Format("Minimum Bid is {0}!",oldAuction.MinimumBid));
 
                     oldAuction.Bids.Add(newBid);
                     auction = oldAuction;
@@ -101,11 +107,6 @@ namespace AuctionApp.API
                 }
             }
 
-            
-
-            
-            
-            
             return Ok(auction);
         }
 
