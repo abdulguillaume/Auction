@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AuctionApp.Models;
 using System.Collections.Generic;
+using System.IO;
 
 namespace AuctionApp.Data
 {
@@ -51,6 +52,8 @@ namespace AuctionApp.Data
 
             if (!db.AuctionItems.Any())
             {
+                var img = File.ReadAllBytes("wwwroot/images/data/sandals.jpg");
+
                 var auctionItem = new AuctionItem
                 {
                     Name = "Reaction KC/Sandals",
@@ -59,9 +62,10 @@ namespace AuctionApp.Data
                     NumberOfBids = 2,
                     CreatedDate = DateTime.Now,
                     Images = new List<ItemImage>() {
+
                         new ItemImage
                         {
-                            ImageUrl = "images/data/sandals.jpg"
+                            Pic = img
                         }
                     }
                 };

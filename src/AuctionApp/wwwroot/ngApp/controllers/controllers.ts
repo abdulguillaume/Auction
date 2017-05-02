@@ -18,6 +18,8 @@ namespace AuctionApp.Controllers {
     export class  AuctionsController {
         public auctions; 
         public auctionToCreate;
+        //to remove once test succeed
+        //public files;
 
         constructor(private AuctionService: AuctionApp.Services.AuctionService, private $state: ng.ui.IStateService, private $uibModal: angular.ui.bootstrap.IModalService)
         {
@@ -52,12 +54,19 @@ namespace AuctionApp.Controllers {
         }
 
 
-        public add(auction) {
-            this.AuctionService.save(auction)
+        public addAuction() {
+            this.AuctionService.save(this.auctionToCreate)
                 .then(
-                    () => this.$state.go('home')
+                () => {
+                    this.auctionToCreate = null;
+                    this.$state.go('home');
+                }
                 );
         }
+
+
+
+
 
     }
 

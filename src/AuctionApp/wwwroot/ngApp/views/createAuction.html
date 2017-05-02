@@ -1,6 +1,6 @@
-﻿<h3>Create an auction</h3>
+﻿<h3>Add an Item to Auction</h3>
 
-<form ng-submit="controller.add()">
+<form ng-submit="controller.addAuction()">
     <label for="name"> Name: 
         <input id="name" type="text" ng-model="controller.auctionToCreate.name"/>
     </label>
@@ -16,6 +16,14 @@
     <label for="numberOfBids"> Number Of Bids:
         <input id="numberOfBids" type="number" ng-model="controller.auctionToCreate.numberOfBids" />
     </label>
+
+    <br />
+    <label> Add Images
+        <!--<input type="file" ng-model="controller.files" multiple >-->
+        <button class="button" ngf-select="controller.upload($file)">Upload</button>
+    </label>
+    <br />
+    <input type="submit" value="Save" />
 
 
 </form>

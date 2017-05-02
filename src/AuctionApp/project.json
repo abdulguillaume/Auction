@@ -10,7 +10,6 @@
     "Microsoft.AspNetCore.Diagnostics": "1.0.0",
     "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "1.0.0",
     "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.0.0",
-    "Microsoft.AspNetCore.Mvc": "1.0.0",
     "Microsoft.AspNetCore.Razor.Tools": {
       "version": "1.0.0-preview2-final",
       "type": "build"
@@ -42,8 +41,11 @@
     "Microsoft.VisualStudio.Web.CodeGenerators.Mvc": {
       "version": "1.0.0-preview2-final",
       "type": "build"
-    }
-  },
+    },
+    "angular-file-upload": "12.2.13",
+    "angular-file-upload.TypeScript.DefinitelyTyped": "0.7.0",
+    "System.Net.Http": "4.3.1",
+    "Microsoft.AspNetCore.Mvc": "1.1.2" },
 
   "tools": {
     "BundlerMinifier.Core": "2.0.238",

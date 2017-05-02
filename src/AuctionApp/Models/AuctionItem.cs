@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,7 +24,7 @@ namespace AuctionApp.Models
 
         public List<Bid> Bids { get; set; }
 
-        public decimal getMax()
+        public decimal GetMax()
         {
             //let's keep both conditions separate
             //if (Bids == null || Bids.Count == 0)
@@ -32,5 +33,28 @@ namespace AuctionApp.Models
             return Bids.Max(b => b.BidAmount);
         }
 
+        public List<StringImage> ImgToBase64()
+        {
+            List<StringImage> imgs = new List<StringImage>();
+
+            foreach (var img in Images)
+            {
+                imgs.Add(
+                    new StringImage
+                    {
+                        Id = img.Id,
+                        Pic = Format(img.Pic)
+                    }
+                    );
+            };
+
+            return imgs;
+        }
+
+        private string Format(byte[] pic)
+        {
+            return string.Format("data:image/gif;base64,{0}", Convert.ToBase64String(pic));
+        }
     }
+
 }

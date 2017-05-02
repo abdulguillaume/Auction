@@ -15,7 +15,7 @@ namespace AuctionApp.API
     {
         // GET: api/values
         [HttpGet]
-        [Authorize(Policy = "AdminOnly")]
+        //[Authorize(Policy = "AdminOnly")]
         public IEnumerable<string> Get()
         {
             var user = this.User;

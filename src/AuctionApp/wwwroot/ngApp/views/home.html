@@ -1,4 +1,4 @@
-<h3>Auctions List</h3>
+<h3>Auctions List [<a ui-sref="create">Add Item</a>]</h3>
 <ul>
     <li ng-repeat="auction in controller.auctions">
         <table>
@@ -24,11 +24,15 @@
             </tr>
             <tr>
                 <td>
-                    <ol>
-                        <li ng-repeat="item in auction.images">
-                            <img ng-src="{{item.imageUrl}}" />
-                        </li>
-                    </ol>
+                    <div>
+                        <!--not working, to fix later-->
+                        <carousel interval="2000">
+                            <slide ng-repeat="item in auction.images" active="0">
+                                <img ng-src="{{item.pic}}">
+                            </slide>
+                        </carousel>
+                    </div>
+                    
                 </td>
             </tr>
             <tr>

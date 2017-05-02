@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace AuctionApp.Models
 {
-    public class ItemImage
+    //not stored in db
+    public class StringImage
     {
         public int Id { get; set; }
-        //public string ImageUrl { get; set; }
-        public byte[] Pic { get; set; }
+        public string Pic { get; set; }
     }
 }

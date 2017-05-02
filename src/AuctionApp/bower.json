@@ -11,6 +11,7 @@
     "angular-bootstrap": "1.x",
     "angular-animate": "1.x",
     "angular-touch": "1.x",
-    "angular-ui-router": "0.x"
+    "angular-ui-router": "0.x",
+    "angular-file-upload": "2.2.0"
   }
 }

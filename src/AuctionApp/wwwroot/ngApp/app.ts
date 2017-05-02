@@ -1,6 +1,6 @@
 namespace AuctionApp {
 
-    angular.module('AuctionApp', ['ui.router', 'ngResource', 'ui.bootstrap']).config((
+    angular.module('AuctionApp', ['ui.router', 'ngResource', 'ui.bootstrap', 'ngFileUpload']).config((
         $stateProvider: ng.ui.IStateProvider,
         $urlRouterProvider: ng.ui.IUrlRouterProvider,
         $locationProvider: ng.ILocationProvider
@@ -10,6 +10,12 @@ namespace AuctionApp {
             .state('home', {
                 url: '/',
                 templateUrl: '/ngApp/views/home.html',
+                controller: AuctionApp.Controllers.AuctionsController,
+                controllerAs: 'controller'
+            })
+            .state('create', {
+                url: '/addAuction',
+                templateUrl: '/ngApp/views/createAuction.html',
                 controller: AuctionApp.Controllers.AuctionsController,
                 controllerAs: 'controller'
             })

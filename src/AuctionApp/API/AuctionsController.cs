@@ -26,15 +26,31 @@ namespace AuctionApp.API
 
         // GET: api/values
         [HttpGet]
-        public IEnumerable<AuctionItem> Get()
+        public IEnumerable<AuctionItemWithByteToBase64> Get()
         {
             /*return _db.AuctionItems
                 .Include(p => p.Images).ToList();*/
-            
-            var items = _db.AuctionItems
-                .Include(p => p.Images)
-                .Include(b => b.Bids)
-                .ToList();
+
+            //var items = _db.AuctionItems
+            //    .Include(b => b.Bids)
+            //    .Include(p=> p.Images)
+            //    .Include(p => new List<StringImage> { p.ImgToBase64() })
+            //    .ToList();
+
+            var items = from i in _db.AuctionItems
+                        .Include(p => p.Images)
+                        .Include(b => b.Bids)
+                        select new AuctionItemWithByteToBase64
+                        {
+                            Id = i.Id,
+                            Name = i.Name,
+                            Description = i.Description,
+                            MinimumBid= i.MinimumBid,
+                            NumberOfBids = i.NumberOfBids,
+                            CreatedDate = i.CreatedDate,
+                            Images = i.ImgToBase64(),
+                            Bids = i.Bids
+                        };
 
             return items;
         }
@@ -44,7 +60,7 @@ namespace AuctionApp.API
         public IActionResult Get(int id)
         {
             var auction = _db.AuctionItems
-                .Include(p => p.Images)
+                //.Include(p => p.Images)
                 .Include(b => b.Bids)
                 .FirstOrDefault(a => a.Id == id);
                 
@@ -95,7 +111,7 @@ namespace AuctionApp.API
                     if (oldAuction.Bids.Count==oldAuction.NumberOfBids)
                         return BadRequest("Auction is closed. Ceiling number has been reached!");
 
-                    if (oldAuction.Bids.Count>0 && newBid.BidAmount <= oldAuction.getMax())
+                    if (oldAuction.Bids.Count>0 && newBid.BidAmount <= oldAuction.GetMax())
                         return BadRequest("You should place a higher bid!");
 
                     if (oldAuction.Bids.Count == 0 && newBid.BidAmount < oldAuction.MinimumBid)
