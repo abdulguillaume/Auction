@@ -1,25 +1,25 @@
-﻿<h3>Add an Item to Auction</h3>
+﻿<h3>Add Item to Auction</h3>
 
-<form ng-submit="controller.addAuction()">
+<form method="post" enctype="multipart/form-data" action="/api/upload/">
     <label for="name"> Name: 
-        <input id="name" type="text" ng-model="controller.auctionToCreate.name"/>
+        <input id="name" type="text" name="name" required/>
     </label>
     <br />
     <label> Description:
-        <textarea id="description" ng-model="controller.auctionToCreate.description"></textarea>
+        <textarea id="description" name="description" required></textarea>
     </label>
     <br />
     <label for="minimumBid"> Minimum Bid:
-        <input id="minimumBid" type="number" step="any" ng-model="controller.auctionToCreate.minimumBid" />
+        <input id="minimumBid" type="number" step="any" name="minimumBid"  required/>
     </label>
     <br />
     <label for="numberOfBids"> Number Of Bids:
-        <input id="numberOfBids" type="number" ng-model="controller.auctionToCreate.numberOfBids" />
+        <input id="numberOfBids" type="number" name="numberOfBids" />
     </label>
 
     <br />
-    <label> Add Images
-        <button class="button" ngf-select="controller.upload($file)">Upload</button>
+    <label> Add Item Images.. <br />
+        <input type="file" name="files" multiple />
     </label>
     <br />
     <input type="submit" value="Save" />

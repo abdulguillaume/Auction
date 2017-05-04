@@ -97,7 +97,7 @@ namespace AuctionApp.Controllers {
 
             let resource:any = this.$resource('/api/auctions/:id', null, {
                 save: {
-                    method: 'POST'
+                    method: 'POST',
                 }
             });
 
