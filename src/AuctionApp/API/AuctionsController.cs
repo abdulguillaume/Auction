@@ -8,12 +8,16 @@ using AuctionApp.Data;
 using AuctionApp.Models;
 using Microsoft.EntityFrameworkCore;
 using AuctionApp.ViewModels;
+using System.IO;
+using System.Net.Http;
+using Microsoft.AspNetCore.Http;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace AuctionApp.API
 {
     [Route("api/[controller]")]
+    [Consumes("application/json", "application/json-patch+json", "multipart/form-data")]
     public class AuctionsController : Controller
     {
 
@@ -72,6 +76,61 @@ namespace AuctionApp.API
             return Ok(auction);
         }
 
+        private void GetAuctionInFormValues(AuctionItem auction)
+        {
+            auction.Name = Request.Form["name"];
+            auction.Description = Request.Form["description"];
+            auction.MinimumBid = decimal.Parse(Request.Form["minimumBid"]);
+            auction.NumberOfBids = int.Parse(Request.Form["numberOfBids"]);
+        }
+
+
+
+        // POST api/values
+        [HttpPost]
+        [Route("/api/upload")]
+        public async Task<IActionResult> /*IActionResult*/ PostFile()//[FromBody]AuctionItem auction)
+        {
+            var files = Request.Form.Files;
+
+            AuctionItem auction = new AuctionItem();
+
+            GetAuctionInFormValues(auction);
+
+            auction.CreatedDate = DateTime.Now;
+
+            List<ItemImage> imgs = new List<ItemImage>();
+
+            foreach (var file in files)
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (var rs = file.OpenReadStream()) {
+
+                        rs.CopyTo(ms);
+
+                        ItemImage img = new ItemImage
+                        {
+                            Pic = ms.ToArray()
+                        };
+
+                        imgs.Add(img);
+
+                    }
+                        
+                }
+                    
+            }
+
+            if (imgs.Count > 0)
+                auction.Images = imgs;
+
+            _db.AuctionItems.Add(auction);
+            _db.SaveChanges();
+
+            return Ok(auction);
+        }
+
         // POST api/values
         [HttpPost]
         public IActionResult Post([FromBody]AuctionItem auction)
@@ -85,8 +144,9 @@ namespace AuctionApp.API
             {
                 //add a new auction
                 auction.CreatedDate = DateTime.Now;
+
                 _db.AuctionItems.Add(auction);
-                _db.SaveChanges();
+
             }
             else
             {
@@ -105,7 +165,7 @@ namespace AuctionApp.API
                         Customer = auction.Bids[0].Customer
                     };
 
-                   if(oldAuction.Bids == null)
+                    if(oldAuction.Bids == null)
                         oldAuction.Bids = new List<Bid>();
 
                     if (oldAuction.Bids.Count==oldAuction.NumberOfBids)
@@ -119,9 +179,11 @@ namespace AuctionApp.API
 
                     oldAuction.Bids.Add(newBid);
                     auction = oldAuction;
-                    _db.SaveChanges();
+                    //_db.SaveChanges();
                 }
             }
+
+            _db.SaveChanges();
 
             return Ok(auction);
         }
