@@ -15,8 +15,33 @@ namespace AuctionApp.Services {
             return this.AuctionResource.save(auction).$promise;
         }
 
-        constructor($resource: ng.resource.IResourceService) {
+        /*public upload(formData) {
+
+            let promise = new Promise( (resolve, reject) => {
+
+                let TmpResource = this.$resource('/api/upload/', null, {
+                    save: {
+                        method: 'POST',
+                        transformRequest: formData,
+                        
+                        headers: { 'Content-Type': undefined, enctype: 'multipart/form-data' }
+                    }
+                });
+
+                debugger;
+
+                TmpResource.save();
+
+
+            });
+
+            return promise;
+
+        }*/
+
+        constructor(public $resource: ng.resource.IResourceService) {
             this.AuctionResource = $resource('/api/auctions/:id');
+
         }
     }
 

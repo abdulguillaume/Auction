@@ -1,0 +1,50 @@
+﻿
+<div ng-show="account.isLoggedIn()">
+    <h3>Add Item to Auction</h3>
+
+    <form>
+
+        <label for="name">
+            Name:
+            <input id="name" type="text" ng-model="controller.auctionToCreate.name" required />
+        </label>
+        <br />
+        <label>
+            Description:
+            <textarea id="description" ng-model="controller.auctionToCreate.description" required></textarea>
+        </label>
+        <br />
+        <label for="minimumBid">
+            Minimum Bid:
+            <input id="minimumBid" type="number" step="any" ng-model="controller.auctionToCreate.minimumBid" required />
+        </label>
+        <br />
+        <label for="numberOfBids">
+            Number Of Bids:
+            <input id="numberOfBids" type="number" ng-model="controller.auctionToCreate.numberOfBids" required />
+        </label>
+
+        <br />
+        <label>
+            Select Image(s) To Upload: <br />
+            <button class="button" ngf-select="controller.upload($files)" ngf-multiple="true">Upload</button>
+            <span>{{controller.getFilesCount()}} file(s)</span>
+        </label>
+        <br />
+        <span style="color:red;"> {{controller.emsg}}</span>
+        <br />
+        <input type="submit" ng-click="controller.uploadFormData()" value="Add" 
+               ng-disabled="!controller.modelStateOk()"
+                />
+
+    </form>
+
+</div>
+
+<div ng-show="!account.isLoggedIn()">
+<h2>You need an account prior to place items for auction!</h2>
+</div>
+
+<hr />
+
+<a ui-sref="home">Back to main page</a>

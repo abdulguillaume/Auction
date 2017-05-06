@@ -14,8 +14,8 @@ namespace AuctionApp {
                 controllerAs: 'controller'
             })
             .state('create', {
-                url: '/addAuction',
-                templateUrl: '/ngApp/views/createAuction.html',
+                url: '/addItem',
+                templateUrl: '/ngApp/views/createAuctionItem.html',
                 controller: AuctionApp.Controllers.AuctionsController,
                 controllerAs: 'controller'
             })

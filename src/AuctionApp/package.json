@@ -2,7 +2,9 @@
   "version": "1.0.0",
   "name": "asp.net",
   "private": true,
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/es6-promise": "0.0.32"
+  },
   "dependencies": {
     "@types/angular": "^1.5.16",
     "@types/angular-resource": "^1.5.6",

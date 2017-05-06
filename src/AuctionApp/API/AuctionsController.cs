@@ -11,6 +11,7 @@ using AuctionApp.ViewModels;
 using System.IO;
 using System.Net.Http;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -64,7 +65,7 @@ namespace AuctionApp.API
         public IActionResult Get(int id)
         {
             var auction = _db.AuctionItems
-                //.Include(p => p.Images)
+                .Include(p => p.Images)
                 .Include(b => b.Bids)
                 .FirstOrDefault(a => a.Id == id);
                 
@@ -73,29 +74,49 @@ namespace AuctionApp.API
                 return BadRequest(this.ModelState);
             }
 
-            return Ok(auction);
+
+            var auctionToBase64 = new AuctionItemWithByteToBase64
+            {
+                Id = auction.Id,
+                Name = auction.Name,
+                Description = auction.Description,
+                MinimumBid = auction.MinimumBid,
+                NumberOfBids = auction.NumberOfBids,
+                CreatedDate = auction.CreatedDate,
+                Images = auction.ImgToBase64(),
+                Bids = auction.Bids
+            };
+
+            return Ok(auctionToBase64);
         }
 
         private void GetAuctionInFormValues(AuctionItem auction)
         {
-            auction.Name = Request.Form["name"];
-            auction.Description = Request.Form["description"];
-            auction.MinimumBid = decimal.Parse(Request.Form["minimumBid"]);
-            auction.NumberOfBids = int.Parse(Request.Form["numberOfBids"]);
+            //like mention in controller.ts fields[x] to retrieve form data for auctionToCreate
+            auction.Name =  Request.Form["fields[name]"];
+            auction.Description =  Request.Form["fields[description]"];
+            auction.MinimumBid = decimal.Parse(Request.Form["fields[minimumBid]"]);
+            auction.NumberOfBids =  int.Parse(Request.Form["fields[numberOfBids]"]);
         }
-
 
 
         // POST api/values
         [HttpPost]
         [Route("/api/upload")]
+        [Authorize]
         public async Task<IActionResult> /*IActionResult*/ PostFile()//[FromBody]AuctionItem auction)
         {
             var files = Request.Form.Files;
 
+            if (files.Count > 3)
+                return BadRequest("Can't load more than three (3) images!");
+
             AuctionItem auction = new AuctionItem();
 
             GetAuctionInFormValues(auction);
+
+            if (string.IsNullOrEmpty(auction.Name) || string.IsNullOrEmpty(auction.Description) || auction.MinimumBid == 0 || auction.NumberOfBids == 0)
+                return BadRequest("All fields are required!");
 
             auction.CreatedDate = DateTime.Now;
 

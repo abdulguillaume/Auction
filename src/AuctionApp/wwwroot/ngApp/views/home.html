@@ -1,56 +1,38 @@
-<h3>Auctions List [<a ui-sref="create">Add Item</a>]</h3>
-<ul>
-    <li ng-repeat="auction in controller.auctions">
-        <table>
-            <tr>
-                <td>
-                    Item: {{auction.name}}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Details: {{auction.description}}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Minimum BID: {{auction.minimumBid|currency}}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Number Of BID: {{auction.bids.length}} / {{auction.numberOfBids}}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div>
-                        <!--not working, to fix later-->
-                        <carousel interval="2000">
-                            <slide ng-repeat="item in auction.images" active="0">
-                                <img ng-src="{{item.pic}}">
-                            </slide>
-                        </carousel>
-                    </div>
-                    
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <ul>
-                        <li ng-repeat="bid in auction.bids">
-                            {{bid.bidAmount|currency}} by {{bid.customer}} on {{bid.bidDate|date:'medium'}}
-                        </li>
-                    </ul>
-                    <button ng-click="controller.showModal(
-                                    auction.id, 
-                                    auction.name, 
+<!--<h3>Auctions List [<a ui-sref="create">Add Item</a>]</h3>-->
+<div  ng-init="controller.getData()">
+    <div ng-repeat="auction in controller.auctions">
+
+        <fieldset>
+            <legend>
+                {{auction.name}}
+            </legend>
+            Details: {{auction.description}}<br />
+            Minimum BID: {{auction.minimumBid|currency}}<br />
+            Number Of BID: {{auction.bids.length}} / {{auction.numberOfBids}}<br />
+            <div>
+                <!--not working, to fix later-->
+                <carousel interval="2000">
+                    <slide ng-repeat="item in auction.images" active="0">
+                        <img ng-src="{{item.pic}}">
+                    </slide>
+                </carousel>
+            </div>
+            <div>
+                <ul>
+                    <li ng-repeat="bid in auction.bids">
+                        {{bid.bidAmount|currency}} by {{bid.customer}} on {{bid.bidDate|date:'medium'}}
+                    </li>
+                </ul>
+                <button ng-click="controller.showModal(
+                                    auction.id,
+                                    auction.name,
                                     account.getUserName()
                                         )"
-                         ng-show="account.isLoggedIn()"   
-                            >Bid</button>
-                </td>
-            </tr>
-        </table>
-    </li>
-</ul>
+                        ng-show="account.isLoggedIn()">
+                    Bid
+                </button>
+            </div>
+        </fieldset>
+        <br />
+    </div>
+</div>
