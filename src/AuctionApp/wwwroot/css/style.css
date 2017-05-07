@@ -1,0 +1,13 @@
+﻿body {
+}
+
+
+.ImgContainer{
+    float:left;
+    margin: 10px 10px;
+}
+
+img {
+            max-width: 150px;
+            max-height: 150px;
+        }

@@ -4,6 +4,7 @@
 /// <reference path="../bower_components/angular-bootstrap/ui-bootstrap-tpls.js" />
 /// <reference path="../bower_components/angular-file-upload/dist/angular-file-upload.min.js" />
 /// <reference path="../bower_components/angular-resource/angular-resource.js" />
+/// <reference path="../bower_components/angular-route/angular-route.js" />
 /// <reference path="../bower_components/angular-touch/angular-touch.js" />
 /// <reference path="../bower_components/angular-ui-router/release/angular-ui-router.js" />
 /// <reference path="../bower_components/bootstrap/dist/js/bootstrap.js" />

@@ -6,18 +6,25 @@
             <legend>
                 {{auction.name}}
             </legend>
+            <div ng-show="account.isLoggedIn()">
+                [<a ui-sref="update({id: {{auction.id}}})">Edit</a>]
+            </div>
             Details: {{auction.description}}<br />
             Minimum BID: {{auction.minimumBid|currency}}<br />
             Number Of BID: {{auction.bids.length}} / {{auction.numberOfBids}}<br />
             <div>
                 <!--not working, to fix later-->
-                <carousel interval="2000">
+                <!--<carousel interval="2000">
                     <slide ng-repeat="item in auction.images" active="0">
                         <img ng-src="{{item.pic}}">
                     </slide>
-                </carousel>
+                </carousel>-->
+                <div class="ImgContainer" ng-repeat="item in auction.images">
+                    <img ng-src="{{item.pic}}">
+                </div>
+
             </div>
-            <div>
+            <div style="display: block;clear: both">
                 <ul>
                     <li ng-repeat="bid in auction.bids">
                         {{bid.bidAmount|currency}} by {{bid.customer}} on {{bid.bidDate|date:'medium'}}
@@ -28,7 +35,9 @@
                                     auction.name,
                                     account.getUserName()
                                         )"
-                        ng-show="account.isLoggedIn()">
+                        ng-show="account.isLoggedIn()"
+                        style="display: block; clear: both;"
+                        >
                     Bid
                 </button>
             </div>

@@ -33,15 +33,6 @@ namespace AuctionApp.API
         [HttpGet]
         public IEnumerable<AuctionItemWithByteToBase64> Get()
         {
-            /*return _db.AuctionItems
-                .Include(p => p.Images).ToList();*/
-
-            //var items = _db.AuctionItems
-            //    .Include(b => b.Bids)
-            //    .Include(p=> p.Images)
-            //    .Include(p => new List<StringImage> { p.ImgToBase64() })
-            //    .ToList();
-
             var items = from i in _db.AuctionItems
                         .Include(p => p.Images)
                         .Include(b => b.Bids)
@@ -90,13 +81,49 @@ namespace AuctionApp.API
             return Ok(auctionToBase64);
         }
 
-        private void GetAuctionInFormValues(AuctionItem auction)
+        private AuctionItem GetAuctionInOrFromFormValues()
         {
             //like mention in controller.ts fields[x] to retrieve form data for auctionToCreate
-            auction.Name =  Request.Form["fields[name]"];
-            auction.Description =  Request.Form["fields[description]"];
-            auction.MinimumBid = decimal.Parse(Request.Form["fields[minimumBid]"]);
-            auction.NumberOfBids =  int.Parse(Request.Form["fields[numberOfBids]"]);
+            AuctionItem auction;
+
+            if (Request.Form.ContainsKey("fields[id]"))
+            {
+                int id = int.Parse(Request.Form["fields[id]"]);
+
+                auction = _db.AuctionItems.Include(p=>p.Images).FirstOrDefault(x => x.Id == id);
+
+                for(var i=0; i< 3; i++) 
+                {
+                    var field_val = string.Format("fields[deletedImgs][{0}]", i);
+
+                    if (Request.Form.Keys.Contains(field_val))
+                    {
+                        var tmp = Request.Form[field_val];
+                        var img = _db.ItemImages.FirstOrDefault(x => x.Id == int.Parse(tmp));
+                        auction.Images.Remove(img);
+                        _db.Remove(img);
+                    }
+                    
+                }
+
+            }
+                
+            else
+            {
+                auction = new AuctionItem();
+                //mandatory
+                auction.Name = Request.Form["fields[name]"];
+                
+                auction.MinimumBid = decimal.Parse(Request.Form["fields[minimumBid]"]);
+                auction.NumberOfBids = int.Parse(Request.Form["fields[numberOfBids]"]);
+
+                auction.CreatedDate = DateTime.Now;
+            }
+
+            auction.Description = Request.Form["fields[description]"];
+
+            return auction;
+
         }
 
 
@@ -104,21 +131,19 @@ namespace AuctionApp.API
         [HttpPost]
         [Route("/api/upload")]
         [Authorize]
-        public async Task<IActionResult> /*IActionResult*/ PostFile()//[FromBody]AuctionItem auction)
+        public async Task<IActionResult>  PostFile()
         {
             var files = Request.Form.Files;
+            AuctionItem auction = GetAuctionInOrFromFormValues();
 
-            if (files.Count > 3)
+            if (files.Count > 3 || (auction.Images!=null && files.Count+auction.Images.Count>3))
                 return BadRequest("Can't load more than three (3) images!");
 
-            AuctionItem auction = new AuctionItem();
-
-            GetAuctionInFormValues(auction);
 
             if (string.IsNullOrEmpty(auction.Name) || string.IsNullOrEmpty(auction.Description) || auction.MinimumBid == 0 || auction.NumberOfBids == 0)
                 return BadRequest("All fields are required!");
 
-            auction.CreatedDate = DateTime.Now;
+            //auction.CreatedDate = DateTime.Now;
 
             List<ItemImage> imgs = new List<ItemImage>();
 
@@ -144,9 +169,11 @@ namespace AuctionApp.API
             }
 
             if (imgs.Count > 0)
-                auction.Images = imgs;
+                auction.Images.AddRange( imgs);
 
-            _db.AuctionItems.Add(auction);
+            if(auction.Id==0)
+                _db.AuctionItems.Add(auction);
+
             _db.SaveChanges();
 
             return Ok(auction);
@@ -210,10 +237,13 @@ namespace AuctionApp.API
         }
 
         // PUT api/values/5
-        /*[HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id) //return void
         {
-        }*/
+
+
+            return null;
+        }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]

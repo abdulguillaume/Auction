@@ -22,19 +22,18 @@
         <label for="numberOfBids">
             Number Of Bids:
             <input id="numberOfBids" type="number" ng-model="controller.auctionToCreate.numberOfBids" required />
-        </label>
-
+        </label>        
         <br />
         <label>
             Select Image(s) To Upload: <br />
-            <button class="button" ngf-select="controller.upload($files)" ngf-multiple="true">Upload</button>
+            <button class="button" ngf-select="controller.loadInBrowser($files)" ngf-multiple="true">Upload</button>
             <span>{{controller.getFilesCount()}} file(s)</span>
         </label>
         <br />
         <span style="color:red;"> {{controller.emsg}}</span>
         <br />
-        <input type="submit" ng-click="controller.uploadFormData()" value="Add" 
-               ng-disabled="!controller.modelStateOk()"
+        <input type="submit" ng-click="controller.uploadFormData(1)" value="Add" 
+               ng-disabled="!controller.modelStateOk(controller.auctionToCreate)"
                 />
 
     </form>
