@@ -1,63 +1,90 @@
 ﻿
-<div ng-show="account.isLoggedIn()">
-    <h3>Edit Item</h3>
+<div id="mySpinner" ng-show="controller.auctionToEdit.$resolved===false">
+    <img src="../../images/data/giphy_loading.gif" />
+</div>
 
-    <form>
-        <input type="hidden" ng-model="controller.auctionToEdit.id" />
-        <label for="name">
-            Name:
-            <input id="name" type="text" ng-model="controller.auctionToEdit.name" disabled />
-        </label>
-        <br />
-        <label>
-            Description:
-            <textarea id="description" ng-model="controller.auctionToEdit.description" required></textarea>
-        </label>
-        <br />
-        <label for="minimumBid">
-            Minimum Bid:
-            <input id="minimumBid" type="number" step="any" ng-model="controller.auctionToEdit.minimumBid" disabled />
-        </label>
-        <br />
-        <label for="numberOfBids">
-            Number Of Bids:
-            <input id="numberOfBids" type="number" ng-model="controller.auctionToEdit.numberOfBids" disabled />
-        </label>
+<div ng-show="account.isLoggedIn() && controller.auctionToEdit.$resolved===true">
+    <div>
+        <h3>Edit Item</h3>
 
+        <ul class="alert-info">
+            General information
+            <li>
+                Only the description field is editable.
+            </li>
+            <li>
+                File bigger than 150KB will be discarded if intent to select
+            </li>
+            <li>
+                You can only load image files
+            </li>
+            <li>
+                You can load up to 3 image files (This include the ones already stored on file)
+            </li>
 
-        <div>
-            <div class="ImgContainer" ng-repeat="item in controller.auctionToEdit.images">
-                [<a href="#" ng-click="controller.removeImg(item.id)">x</a>]<br />
-                <input type="hidden" ng-model="item.id" />
-                <img ng-src="{{item.pic}}">
-                
-            </div>
+        </ul>
 
-        </div>
-
-        <br />
-        <div style="display: block;clear: both">
-            <label>
-                Select Image(s) To Upload: <br />
-                <button class="button" ngf-select="controller.loadInBrowser($files)" ngf-multiple="true">Upload</button>
-                <span>{{controller.getFilesCount()}} file(s)</span>
+        <form>
+            <input type="hidden" ng-model="controller.auctionToEdit.id" />
+            <label for="name">
+                Name:
+                <input id="name" type="text" ng-model="controller.auctionToEdit.name" disabled />
             </label>
             <br />
-            <span style="color:red;"> {{controller.emsg}}</span>
+            <label>
+                Description:
+                <textarea id="description" ng-model="controller.auctionToEdit.description" required></textarea>
+            </label>
             <br />
-            <input type="submit" ng-click="controller.uploadFormData(2)" value="Save" 
-                    ng-disabled="!controller.modelStateOk(controller.auctionToEdit)"
-                    />
-        </div>
+            <label for="minimumBid">
+                Minimum Bid:
+                <input id="minimumBid" type="number" step="any" ng-model="controller.auctionToEdit.minimumBid" disabled />
+            </label>
+            <br />
+            <label for="numberOfBids">
+                Number Of Bids:
+                <input id="numberOfBids" type="number" ng-model="controller.auctionToEdit.numberOfBids" disabled />
+            </label>
 
-    </form>
 
+            <div>
+                <div class="ImgContainer" ng-repeat="item in controller.auctionToEdit.images">
+                    [<a href="#" ng-click="controller.removeImg(item.id)">x</a>]<br />
+                    <input type="hidden" ng-model="item.id" />
+                    <img class="item" ng-src="{{item.pic}}">
+
+                </div>
+
+            </div>
+
+            <br />
+            <div style="display: block;clear: both">
+                <label>
+                    Select Image(s) To Upload: <br />
+                    <button class="button" ngf-select="controller.loadInBrowser($files)" ngf-multiple="true" ngf-max-size="150KB" accept="image/*" ngf-model-invalid="invalidFiles">Upload</button>
+                    <span>{{controller.getFilesCount()}} file(s)</span>
+
+                    <div ng-repeat="file in invalidFiles" class="alert-warning">
+                        <i ng-show="file.$error=='maxSize'">
+                            Image is to large, it must be smaller than 150KB
+                        </i>
+                    </div>
+
+                </label>
+                <br />
+                <span style="color:red;"> {{controller.emsg}}</span>
+                <br />
+                <input type="submit" ng-click="controller.uploadFormData(controller.auctionToEdit)" value="Save"
+                       ng-disabled="!controller.modelStateOk(controller.auctionToEdit)" />
+            </div>
+
+        </form>
+    </div>
+    
+    <!--<div ng-show="!controller.modelStateOk(controller.auctionToEdit)">
+        <h3>Item Not Found!</h3>
+    </div>-->
 </div>
-
-<div ng-show="!account.isLoggedIn()">
-<h2>You need an account prior to place items for auction!</h2>
-</div>
-
 <hr />
 
 <a ui-sref="home">Back to main page</a>

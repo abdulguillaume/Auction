@@ -21,15 +21,16 @@ namespace AuctionApp {
             })
             .state('update', {
                 url: '/editItem/:id',
-                //params: { id: $stateParams.id },
+                //params: { id: -1 },
                 templateUrl: '/ngApp/views/editAuctionItem.html',
                 controller: AuctionApp.Controllers.AuctionsController,
                 controllerAs: 'controller'
             })
-            .state('secret', {
-                url: '/secret',
-                templateUrl: '/ngApp/views/secret.html',
-                controller: AuctionApp.Controllers.SecretController,
+            .state('delete', {
+                url: '/deleteItem/:id',
+                //params: { id: -1 },
+                templateUrl: '/ngApp/views/deleteAuctionItem.html',
+                controller: AuctionApp.Controllers.AuctionsController,
                 controllerAs: 'controller'
             })
             .state('login', {
@@ -44,18 +45,18 @@ namespace AuctionApp {
                 controller: AuctionApp.Controllers.RegisterController,
                 controllerAs: 'controller'
             })
-            .state('externalRegister', {
-                url: '/externalRegister',
-                templateUrl: '/ngApp/views/externalRegister.html',
-                controller: AuctionApp.Controllers.ExternalRegisterController,
-                controllerAs: 'controller'
-            }) 
-            .state('about', {
-                url: '/about',
-                templateUrl: '/ngApp/views/about.html',
-                controller: AuctionApp.Controllers.AboutController,
-                controllerAs: 'controller'
-            })
+            //.state('externalRegister', {
+            //    url: '/externalRegister',
+            //    templateUrl: '/ngApp/views/externalRegister.html',
+            //    controller: AuctionApp.Controllers.ExternalRegisterController,
+            //    controllerAs: 'controller'
+            //}) 
+            //.state('about', {
+            //    url: '/about',
+            //    templateUrl: '/ngApp/views/about.html',
+            //    controller: AuctionApp.Controllers.AboutController,
+            //    controllerAs: 'controller'
+            //})
             .state('notFound', {
                 url: '/notFound',
                 templateUrl: '/ngApp/views/notFound.html'

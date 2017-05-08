@@ -36,42 +36,72 @@ namespace AuctionApp.Data
                 await userManager.AddClaimAsync(admin, new Claim("IsAdmin", "true"));
             }
 
-            // Ensure Mike (not IsAdmin)
-            /*
-            var mike = await userManager.FindByNameAsync("Mike@CoderCamps.com");
-            if (mike == null)
+            // Ensure Abdul (not IsAdmin)
+            // normal user
+            
+            var abdul = await userManager.FindByNameAsync("abdul@local.ht");
+            if (abdul == null)
             {
-                // create user
-                mike = new ApplicationUser
+                 //create user
+                abdul = new ApplicationUser
                 {
-                    UserName = "Mike@CoderCamps.com",
-                    Email = "Mike@CoderCamps.com"
+                    UserName = "abdul@local.ht",
+                    Email = "abdul@local.ht"
                 };
-                await userManager.CreateAsync(mike, "Secret123!");
-            }*/
+                await userManager.CreateAsync(abdul, "Secret123!");
+            }
 
             if (!db.AuctionItems.Any())
             {
-                var img = File.ReadAllBytes("wwwroot/images/data/sandals.jpg");
+                var img1 = File.ReadAllBytes("wwwroot/images/data/sandals.jpg");
+                var img2 = File.ReadAllBytes("wwwroot/images/data/mug01.jpg");
+                var img3 = File.ReadAllBytes("wwwroot/images/data/mug02.jpg");
 
-                var auctionItem = new AuctionItem
+                var auctionItem1 = new AuctionItem
                 {
                     Name = "Reaction KC/Sandals",
                     Description = "Pair of Sandals/Make Reaction Kenneth Cole /Material: Leather",
                     MinimumBid = 5m,
                     NumberOfBids = 2,
+                    CreatedBy = "admin@arimex.ht",
                     CreatedDate = DateTime.Now,
                     Images = new List<ItemImage>() {
 
                         new ItemImage
                         {
-                            Pic = img
+                            Pic = img1
+                        }
+                    }
+                };
+
+                var auctionItem2 = new AuctionItem
+                {
+                    Name = "Coffee Mug",
+                    Description = "Bill Gates coffee mug in 12th grade",
+                    MinimumBid = 20m,
+                    NumberOfBids = 6,
+                    CreatedBy = "abdul@local.ht",
+                    CreatedDate = DateTime.Now,
+                    Images = new List<ItemImage>() {
+
+                        new ItemImage
+                        {
+                            Pic = img2
+                        },
+
+                        new ItemImage
+                        {
+                            Pic = img3
                         }
                     }
                 };
 
                 db.AuctionItems.Add(
-                    auctionItem
+                    auctionItem1
+                    );
+
+                db.AuctionItems.Add(
+                    auctionItem2
                     );
 
                 db.SaveChanges();

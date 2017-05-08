@@ -1,13 +1,75 @@
 ﻿body {
+    background: #5d8aa8;
 }
 
+a:hover{
+  color: blue;
+
+}
+
+a:active{
+  color:red;
+
+}
+
+a:visited{
+color:#989898;
+
+}
 
 .ImgContainer{
     float:left;
     margin: 10px 10px;
 }
 
-img {
+.item {
             max-width: 150px;
             max-height: 150px;
         }
+
+div.container{
+  margin: 0 auto;
+  background: white;
+  width: 800px;
+  height: auto;
+}
+
+#horzNav{
+  display: block;
+  padding: 5px 20px 5px 0px;
+  background-color: black;
+}
+
+#horzNav a{
+  text-decoration: none;
+  padding: 0px 0px 0px 20px;
+}
+
+#horzNav a:hover{
+  color: #89cff0;
+}
+
+#userInfo {
+
+color: blue;
+padding: 0px 0px 0px 20px;
+
+}
+
+#logo {
+    color:white;
+    padding: 0px 0px 0px 20px;
+    text-align: center;
+}
+
+#mySpinner {
+    text-align: center;
+}
+
+footer{
+  clear: both;
+  background: black;
+  color: white;
+  padding: 10px;
+}
+

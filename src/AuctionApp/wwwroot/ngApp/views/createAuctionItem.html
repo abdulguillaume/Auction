@@ -2,7 +2,23 @@
 <div ng-show="account.isLoggedIn()">
     <h3>Add Item to Auction</h3>
 
-    <form>
+    <ul class="alert-info">
+        General information
+        <li>
+            Providing item images is not required, Any other fields are.
+        </li>
+        <li>
+            File bigger than 150KB will be discarded if intent to select
+        </li>
+        <li>
+            You can only load image files
+        </li>
+        <li>
+            You can load up to 3 image files
+        </li>
+        
+    </ul>
+    <form name="myForm" id="myForm">
 
         <label for="name">
             Name:
@@ -26,13 +42,21 @@
         <br />
         <label>
             Select Image(s) To Upload: <br />
-            <button class="button" ngf-select="controller.loadInBrowser($files)" ngf-multiple="true">Upload</button>
+            <button id="files" name="files" class="button" ngf-select="controller.loadInBrowser($files)" ngf-multiple="true" ngf-max-size="150KB" accept="image/*" ngf-model-invalid="invalidFiles">Upload</button>
             <span>{{controller.getFilesCount()}} file(s)</span>
+
+            <br />
+            <div ng-repeat="file in invalidFiles"  class="alert-warning">
+                <i ng-show="file.$error=='maxSize'">
+                    Image is to large, it must be smaller than 150KB
+                </i>
+            </div>
+
         </label>
         <br />
         <span style="color:red;"> {{controller.emsg}}</span>
         <br />
-        <input type="submit" ng-click="controller.uploadFormData(1)" value="Add" 
+        <input type="submit" ng-click="controller.uploadFormData(controller.auctionToCreate)" value="Add" 
                ng-disabled="!controller.modelStateOk(controller.auctionToCreate)"
                 />
 
@@ -41,7 +65,7 @@
 </div>
 
 <div ng-show="!account.isLoggedIn()">
-<h2>You need an account prior to place items for auction!</h2>
+<h3>You need an account prior to place items for auction!</h3>
 </div>
 
 <hr />

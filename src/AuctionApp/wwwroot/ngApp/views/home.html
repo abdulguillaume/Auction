@@ -1,5 +1,12 @@
-<!--<h3>Auctions List [<a ui-sref="create">Add Item</a>]</h3>-->
-<div  ng-init="controller.getData()">
+
+<div id="mySpinner" ng-show="controller.auctions.$resolved===false">
+    <img src="../../images/data/giphy_loading.gif" />
+</div>
+
+<div >
+    <div ng-show="controller.auctions.$resolved===true && controller.auctions.length==0">
+        <h2>No Items in the Database for Auction!</h2>
+    </div>
     <div ng-repeat="auction in controller.auctions">
 
         <fieldset>
@@ -7,20 +14,25 @@
                 {{auction.name}}
             </legend>
             <div ng-show="account.isLoggedIn()">
-                [<a ui-sref="update({id: {{auction.id}}})">Edit</a>]
+                <!--is owner of this item-->
+                <div ng-show="account.getUserName()==auction.createdBy">
+                    [<a ui-sref="update({id: {{auction.id}}})">Edit</a>]
+                </div>
+                <!--is admin-->
+                <div ng-show="account.getClaim('IsAdmin')">
+                    [<a ui-sref="delete({id: {{auction.id}}})">Delete</a>]
+                </div>
             </div>
             Details: {{auction.description}}<br />
+            Created by: {{auction.createdBy}}<br />
+            Created on: {{auction.createdDate|date:'medium'}}<br />
             Minimum BID: {{auction.minimumBid|currency}}<br />
             Number Of BID: {{auction.bids.length}} / {{auction.numberOfBids}}<br />
+
             <div>
-                <!--not working, to fix later-->
-                <!--<carousel interval="2000">
-                    <slide ng-repeat="item in auction.images" active="0">
-                        <img ng-src="{{item.pic}}">
-                    </slide>
-                </carousel>-->
+
                 <div class="ImgContainer" ng-repeat="item in auction.images">
-                    <img ng-src="{{item.pic}}">
+                    <img class="item" ng-src="{{item.pic}}">
                 </div>
 
             </div>
@@ -30,11 +42,7 @@
                         {{bid.bidAmount|currency}} by {{bid.customer}} on {{bid.bidDate|date:'medium'}}
                     </li>
                 </ul>
-                <button ng-click="controller.showModal(
-                                    auction.id,
-                                    auction.name,
-                                    account.getUserName()
-                                        )"
+                <button ng-click="controller.showModal(auction.id, auction.name, account.getUserName())"
                         ng-show="account.isLoggedIn()"
                         style="display: block; clear: both;"
                         >
@@ -45,3 +53,6 @@
         <br />
     </div>
 </div>
+
+
+

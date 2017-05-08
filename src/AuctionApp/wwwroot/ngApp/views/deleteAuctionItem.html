@@ -1,0 +1,62 @@
+﻿
+<div id="mySpinner" ng-show="controller.auctionToEdit.$resolved===false">
+    <img src="../../images/data/giphy_loading.gif" />
+</div>
+
+<div ng-show="account.isLoggedIn() && controller.auctionToEdit.$resolved===true">
+    <div>
+        <h3>Delete Item</h3>
+
+        <div class="alert-warning">
+            Are you sure you want to delete this Item? <br />
+            All attached details will be lost.
+        </div>
+        <br />
+        <form>
+            <input type="hidden" ng-model="controller.auctionToEdit.id" />
+            <label for="name">
+                Name:
+                <input id="name" type="text" ng-model="controller.auctionToEdit.name" disabled />
+            </label>
+            <br />
+            <label>
+                Description:
+                <textarea id="description" ng-model="controller.auctionToEdit.description" disabled></textarea>
+            </label>
+            <br />
+            <label for="minimumBid">
+                Minimum Bid:
+                <input id="minimumBid" type="number" step="any" ng-model="controller.auctionToEdit.minimumBid" disabled />
+            </label>
+            <br />
+            <label for="numberOfBids">
+                Number Of Bids:
+                <input id="numberOfBids" type="number" ng-model="controller.auctionToEdit.numberOfBids" disabled />
+            </label>
+
+            <div>
+                <div class="ImgContainer" ng-repeat="item in controller.auctionToEdit.images">
+                    <img class="item" ng-src="{{item.pic}}">
+
+                </div>
+
+            </div>
+
+            <br />
+            <div style="clear:both">
+                <span style="color:red;"> {{controller.emsg}}</span>
+                <br />
+                <input type="submit" ng-click="controller.deleteAuction(controller.auctionToEdit.id)" value="Delete" />
+            </div>
+
+        </form>
+    </div>
+    <!--<div ng-show="!controller.modelStateOk(controller.auctionToEdit)">
+        <h3>Item Not Found!</h3>
+    </div>-->
+
+</div>
+
+<hr />
+
+<a ui-sref="home">Back to main page</a>

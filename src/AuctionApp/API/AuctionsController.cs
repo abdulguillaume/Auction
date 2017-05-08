@@ -24,6 +24,8 @@ namespace AuctionApp.API
 
         private ApplicationDbContext _db;
 
+        private const int MAX_IMG_TO_SAVE = 3;
+
         public AuctionsController(ApplicationDbContext db)
         {
             _db = db;
@@ -43,6 +45,7 @@ namespace AuctionApp.API
                             Description = i.Description,
                             MinimumBid= i.MinimumBid,
                             NumberOfBids = i.NumberOfBids,
+                            CreatedBy = i.CreatedBy,
                             CreatedDate = i.CreatedDate,
                             Images = i.ImgToBase64(),
                             Bids = i.Bids
@@ -73,6 +76,7 @@ namespace AuctionApp.API
                 Description = auction.Description,
                 MinimumBid = auction.MinimumBid,
                 NumberOfBids = auction.NumberOfBids,
+                CreatedBy = auction.CreatedBy,
                 CreatedDate = auction.CreatedDate,
                 Images = auction.ImgToBase64(),
                 Bids = auction.Bids
@@ -90,9 +94,12 @@ namespace AuctionApp.API
             {
                 int id = int.Parse(Request.Form["fields[id]"]);
 
-                auction = _db.AuctionItems.Include(p=>p.Images).FirstOrDefault(x => x.Id == id);
+                if (id == 0)
+                    auction = new AuctionItem();
+                else
+                    auction = _db.AuctionItems.Include(p=>p.Images).FirstOrDefault(x => x.Id == id);
 
-                for(var i=0; i< 3; i++) 
+                for(var i=0; i< MAX_IMG_TO_SAVE && id!=0; i++) 
                 {
                     var field_val = string.Format("fields[deletedImgs][{0}]", i);
 
@@ -106,24 +113,22 @@ namespace AuctionApp.API
                     
                 }
 
+                auction.Description = Request.Form["fields[description]"];
+
+                if (id == 0)
+                {
+                    auction.Name = Request.Form["fields[name]"];
+                    auction.MinimumBid = decimal.Parse(Request.Form["fields[minimumBid]"]);
+                    auction.NumberOfBids = int.Parse(Request.Form["fields[numberOfBids]"]);
+                    auction.CreatedBy = Request.Form["fields[createdBy]"];
+                    auction.CreatedDate = DateTime.Now;
+                }
+
+                return auction;
+
             }
-                
-            else
-            {
-                auction = new AuctionItem();
-                //mandatory
-                auction.Name = Request.Form["fields[name]"];
-                
-                auction.MinimumBid = decimal.Parse(Request.Form["fields[minimumBid]"]);
-                auction.NumberOfBids = int.Parse(Request.Form["fields[numberOfBids]"]);
 
-                auction.CreatedDate = DateTime.Now;
-            }
-
-            auction.Description = Request.Form["fields[description]"];
-
-            return auction;
-
+            return null;
         }
 
 
@@ -136,8 +141,11 @@ namespace AuctionApp.API
             var files = Request.Form.Files;
             AuctionItem auction = GetAuctionInOrFromFormValues();
 
-            if (files.Count > 3 || (auction.Images!=null && files.Count+auction.Images.Count>3))
-                return BadRequest("Can't load more than three (3) images!");
+            if (auction == null)
+                return BadRequest("Operation Failed!");
+
+            if (files.Count > MAX_IMG_TO_SAVE || (auction.Images!=null && files.Count+auction.Images.Count> MAX_IMG_TO_SAVE))
+                return BadRequest(string.Format("Can't load more than {0} images!", MAX_IMG_TO_SAVE));
 
 
             if (string.IsNullOrEmpty(auction.Name) || string.IsNullOrEmpty(auction.Description) || auction.MinimumBid == 0 || auction.NumberOfBids == 0)
@@ -168,6 +176,9 @@ namespace AuctionApp.API
                     
             }
 
+            if (auction.Images == null && imgs.Count > 0)
+                auction.Images = new List<ItemImage>();
+
             if (imgs.Count > 0)
                 auction.Images.AddRange( imgs);
 
@@ -181,6 +192,7 @@ namespace AuctionApp.API
 
         // POST api/values
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody]AuctionItem auction)
         {
             if (!ModelState.IsValid)
@@ -226,6 +238,7 @@ namespace AuctionApp.API
                         return BadRequest(string.Format("Minimum Bid is {0}!",oldAuction.MinimumBid));
 
                     oldAuction.Bids.Add(newBid);
+
                     auction = oldAuction;
                     //_db.SaveChanges();
                 }
@@ -237,18 +250,51 @@ namespace AuctionApp.API
         }
 
         // PUT api/values/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id) //return void
-        {
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> Put(int id) //return void
+        //{
 
 
-            return null;
-        }
+        //    return null;
+        //}
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        [Authorize]
+        public IActionResult Delete(int id)
         {
+            var auction = _db.AuctionItems
+                .Include(p => p.Images)
+                .Include(b => b.Bids)
+                .FirstOrDefault(a => a.Id == id);
+
+            if (auction == null)
+            {
+                return NotFound(string.Format("Auction Item ID: {0} not found!", id));
+            }
+
+            var output_msg = string.Format("Auction Item: {0} has been removed from the database!", auction.Name);
+
+            if (auction.Images != null)
+            {
+                foreach (var img in auction.Images)
+                {
+                    _db.ItemImages.Remove(img);
+                }
+            }
+
+            if (auction.Bids != null)
+            {
+                foreach (var bid in auction.Bids)
+                {
+                    _db.Bids.Remove(bid);
+                }
+            }
+
+            _db.AuctionItems.Remove(auction);
+            _db.SaveChanges();
+
+            return Ok(output_msg);
         }
     }
 }

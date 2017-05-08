@@ -12,25 +12,39 @@
             max-width: 150px;
             max-height: 150px;
         }*/
+
+        
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
     </style>
 </head>
-<body ng-controller="AccountController as account">
+<body ng-controller="AccountController as account" ng-cloak>
     <div class="container">
-        <h1>AuctionApp</h1>
-        <div>
+        
+        <div id="horzNav">
+            <div id="logo">
+                <h1>Let's Make It Count!</h1>
+                <h4>Best Auction In Town.</h4>
+            </div>
+            
           <a href="/">Home</a> /
-           <a href="/addItem">Add Item</a>
-
-           / <a href="/secret">Secret</a> /
+           <a href="/addItem">Add Item</a> /
            <a href="/login" ng-show="!account.isLoggedIn()">Login</a>
            <a href="#" ng-click="account.logout()" ng-show="account.isLoggedIn()">Logout</a>
-           <div ng-show="account.isLoggedIn()">
+           <div id="userInfo" ng-show="account.isLoggedIn()">
                [{{account.getUserName()}}]
            </div> 
         </div>
         <hr />
 
         <ui-view></ui-view>
+
+        <footer>
+            <!-- copyright is normally placed in a small tag -->
+            <small>copyright 2017</small>
+        </footer>
+
     </div>
 
     <!-- Library Files -->

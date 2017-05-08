@@ -28,6 +28,7 @@ namespace AuctionApp.Controllers {
             this.getExternalLogins().then((results) => {
                 this.externalLogins = results;
             });
+
         }
     }
 

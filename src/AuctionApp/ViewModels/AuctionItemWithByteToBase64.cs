@@ -18,6 +18,8 @@ namespace AuctionApp.ViewModels
 
         public int NumberOfBids { get; set; }
 
+        public string CreatedBy { get; set; }
+
         public DateTime CreatedDate { get; set; }
 
         public List<StringImage> Images { get; set; }

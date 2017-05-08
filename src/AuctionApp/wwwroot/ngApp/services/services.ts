@@ -4,6 +4,7 @@ namespace AuctionApp.Services {
         private AuctionResource;
 
         public listAuctions() {
+            //debugger;
             return this.AuctionResource.query();
         }
 
@@ -15,37 +16,43 @@ namespace AuctionApp.Services {
             return this.AuctionResource.save(auction).$promise;
         }
 
-        /*public upload(formData) {
-
-            let promise = new Promise( (resolve, reject) => {
-
-                let TmpResource = this.$resource('/api/upload/', null, {
-                    save: {
-                        method: 'POST',
-                        transformRequest: formData,
-                        
-                        headers: { 'Content-Type': undefined, enctype: 'multipart/form-data' }
-                    }
-                });
-
-                debugger;
-
-                TmpResource.save();
-
-
-            });
-
-            return promise;
-
-        }*/
+        public deleteAuction(id)
+        {
+            return this.AuctionResource.delete(id).$promise;
+        }
 
         constructor(public $resource: ng.resource.IResourceService) {
+            //debugger;
             this.AuctionResource = $resource('/api/auctions/:id');
 
         }
     }
 
+
+    //not used
+    //http://stackoverflow.com/questions/41307705/angularjs-pass-data-from-one-view-to-another-with-in-same-controller
+    //export function DataService() {
+
+    //    var staticData = {};
+
+    //    function setData(data, key) {
+
+    //        staticData[key] = data;
+
+    //    }
+
+
+
+    //    function getData(key) {
+
+    //        return staticData[key];
+
+    //    }
+
+    //}
+
     angular.module('AuctionApp').service('AuctionService', AuctionService);
+
 
 
     }
